@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>明日から本気出す / The Unrunning Steed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --parchment: #f0e8d5;
+      --ink: #1a1410;
+      --faded-ink: #3d3028;
+      --rust: #8b2e0a;
+      --foxing: #c4a882;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #2a2018; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--parchment);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse at 30% 20%, #ede0c4 0%, transparent 60%),
+        radial-gradient(ellipse at 75% 80%, #e8d9b8 0%, transparent 55%),
+        linear-gradient(160deg, #f5ead8 0%, #ebe0c8 40%, #e6d8b8 100%);
+      color: var(--ink);
+      font-family: 'IM Fell English', 'Noto Serif JP', Georgia, serif;
+      display: flex;
+      justify-content: center;
+      padding: 60px 20px 100px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 8% 12%, rgba(160,120,70,0.12) 0%, transparent 8%),
+        radial-gradient(circle at 92% 5%, rgba(140,100,55,0.09) 0%, transparent 6%),
+        radial-gradient(circle at 15% 88%, rgba(150,110,65,0.10) 0%, transparent 7%),
+        radial-gradient(circle at 85% 95%, rgba(130,90,45,0.08) 0%, transparent 5%),
+        radial-gradient(circle at 45% 3%, rgba(170,130,75,0.07) 0%, transparent 4%);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* ── Language Toggle ── */
+    .lang-toggle {
+      position: fixed;
+      top: 22px;
+      right: 28px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(139,46,10,0.35);
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(26,20,16,0.12);
+    }
+
+    .lang-btn {
+      background: rgba(240,232,213,0.92);
+      border: none;
+      padding: 7px 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.73rem;
+      letter-spacing: 0.1em;
+      color: var(--foxing);
+      cursor: pointer;
+      transition: background 0.35s, color 0.35s;
+      backdrop-filter: blur(4px);
+    }
+
+    .lang-btn:not(:last-child) {
+      border-right: 1px solid rgba(139,46,10,0.2);
+    }
+
+    .lang-btn.active {
+      background: rgba(139,46,10,0.8);
+      color: #f5ead8;
+    }
+
+    .lang-btn:not(.active):hover {
+      background: rgba(196,168,130,0.3);
+      color: var(--faded-ink);
+    }
+
+    /* ── Page ── */
+    .page {
+      max-width: 680px;
+      width: 100%;
+      position: relative;
+    }
+
+    .page::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--rust) 10%, var(--rust) 90%, transparent);
+      opacity: 0.35;
+    }
+
+    /* ── Language Layers ── */
+    .lang-layer {
+      display: none;
+    }
+
+    .lang-layer.visible {
+      display: block;
+      animation: pageReveal 0.7s ease forwards;
+    }
+
+    /* ── Ornament ── */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 52px;
+    }
+    .ornament-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--foxing), transparent);
+    }
+    .ornament-center {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--foxing);
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    /* ── Title ── */
+    .title-block { margin-bottom: 56px; }
+
+    .title-en {
+      font-family: 'IM Fell English', serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.1;
+      color: var(--ink);
+      position: relative;
+      display: inline-block;
+    }
+    .title-en::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--ink), var(--faded-ink) 60%, transparent);
+      opacity: 0.22;
+    }
+
+    .title-ja {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--ink);
+      letter-spacing: 0.1em;
+      position: relative;
+      display: inline-block;
+    }
+    .title-ja::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 0;
+      width: 100%; height: 1.5px;
+      background: linear-gradient(to right, var(--ink), var(--faded-ink) 60%, transparent);
+      opacity: 0.22;
+    }
+
+    .seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px; height: 38px;
+      border: 1.5px solid var(--rust);
+      border-radius: 2px;
+      margin-left: 16px;
+      vertical-align: middle;
+      position: relative;
+      top: -4px;
+      opacity: 0.6;
+      transform: rotate(-2deg);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.58rem;
+      color: var(--rust);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ── English Prose ── */
+    p.en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 1.5vw, 1.13rem);
+      font-weight: 300;
+      line-height: 2;
+      color: var(--faded-ink);
+      margin-bottom: 1.9em;
+      text-align: justify;
+      hyphens: auto;
+    }
+    p.en.preface {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(0.85rem, 1.3vw, 0.96rem);
+      font-weight: 300;
+      color: #6b5c4e;
+      margin-bottom: 2.8em;
+      letter-spacing: 0.02em;
+    }
+    p.en.preface::first-letter,
+    p.ja.preface::first-letter {
+      font-size: inherit;
+      float: none;
+      padding: 0;
+      color: inherit;
+    }
+    p.drop-cap::first-letter {
+      font-size: 3.7em;
+      font-weight: 400;
+      float: left;
+      line-height: 0.76;
+      padding-right: 0.07em;
+      padding-top: 0.09em;
+      color: var(--ink);
+    }
+      font-family: 'IM Fell English', serif;
+      font-size: 3.8em;
+      font-weight: 400;
+      float: left;
+      line-height: 0.75;
+      padding-right: 0.08em;
+      padding-top: 0.1em;
+      color: var(--ink);
+    }
+    p.en.rhetorical {
+      font-style: italic;
+    }
+
+    /* ── Japanese Prose ── */
+    p.ja {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(0.92rem, 1.4vw, 1.02rem);
+      font-weight: 300;
+      line-height: 2.15;
+      color: var(--faded-ink);
+      margin-bottom: 1.9em;
+      text-align: justify;
+    }
+    p.ja.preface {
+      font-style: italic;
+      font-size: clamp(0.85rem, 1.3vw, 0.96rem);
+      color: #6b5c4e;
+      margin-bottom: 2.8em;
+      letter-spacing: 0.03em;
+    }
+    }
+    p.ja.rhetorical {
+      font-style: italic;
+    }
+
+    p:hover { color: var(--ink); transition: color 0.6s ease; }
+
+    .break {
+      text-align: center;
+      margin: 2.6em 0;
+      color: var(--foxing);
+      letter-spacing: 0.6em;
+      font-size: 0.65rem;
+    }
+
+    /* ── Colophon ── */
+    .colophon {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(160,130,90,0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .colophon-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--foxing);
+      line-height: 1.8;
+    }
+    .colophon-right {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.75rem;
+      color: var(--foxing);
+      opacity: 0.7;
+      text-align: right;
+      letter-spacing: 0.06em;
+    }
+
+    @keyframes pageReveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 40px 28px 80px; }
+      .page::before { display: none; }
+      .seal { display: none; }
+      .lang-toggle { top: 14px; right: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="lang-toggle" role="group" aria-label="Language selector">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-ja" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" id="btn-de" onclick="setLang('de')">DE</button>
+  </div>
+
+  <article class="page">
+
+    <!-- ══════════ ENGLISH ══════════ -->
+    <div class="lang-layer visible" id="layer-en">
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-center">a confession in fragments</span>
+        <div class="ornament-line"></div>
+      </div>
+
+      <div class="title-block">
+        <span class="title-en">The Unrunning Steed</span>
+        <span class="seal">走ら<br>ぬ馬</span>
+      </div>
+
+      <p class="en preface">—If ever I were to become serious, it would be by accident; I am otherwise not constructed for it.</p>
+
+      <p class="en drop-cap">What, indeed, should I write? Possessed of no fixed design, I found myself standing idly within the precincts of a modest Inari shrine, gazing absentmindedly upon that most uninspiring apparatus known as "Tsuittā." My mind refused settlement; my resolve declined to congeal. Thus, in a state of mild spiritual suspension, I began to wander.</p>
+
+      <p class="en">Depositing my smartphone with ceremonial gravity, I approached a venerable cedar whose trunk had begun its gradual negotiations with decay. From its rootstock clung a single desiccated vine. With my cane I peeled it away in crisp fragments, harboring no particular profundity of intent. Thereafter, with an exclamation most theatrical, I assailed a stone fox, captured the act in photographic evidence, and forthwith disseminated it into the digital ether. This, too, proceeded from no elevated meditation.</p>
+
+      <p class="en aside">Such, I am told, is the nature of the streamer: neither allegory nor moral cultivation, but rather the occupation of the vain and faint-hearted, laboring chiefly in the commerce of recognition. To this indictment I offered no rebuttal. I inclined my head with docility and, rising upon my toes, contemplated the evening clouds.</p>
+
+      <p class="en rhetorical">Your post, I am informed by the system's officious notification, has been perused. Should one overturn it with a single phrase, what, pray, would remain? This inquiry has been posed to me repeatedly, and with each recurrence my melancholy deepens. If it could be expressed in one sentence, I would supply it thus: it is precisely what it is, and no more. Henceforth, I entreat you, refrain from observing my posts. A retreat by means of the browser's backward function is strongly advised. I, for my part, would rest easier.</p>
+
+      <div class="break">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <p class="en">A small box, adorned with fragments of colored paper—what purpose does it serve? None whatsoever. It is merely beautiful.</p>
+
+      <p class="en">A single firework, exceeding a thousand yen—why discharge it over a river?</p>
+
+      <p class="en">Kimono—if it but covers nakedness, that should suffice; pattern, fabric, color—none of these carry meaning. A young man of twenty-five, for a single night, with a heart dyed in crimson chūnibyō, and moreover clad in garments purchased by his mother at Jusco—still, it remains clothing all the same. What, then, is so strange about it?</p>
+
+      <p class="en">Ah, sublime spectacle! Applause sufficient to dislodge roofing tiles—yet vanished within the span of a breath. That fleeting thunder was desired, coveted, pursued. One hundred dollars, two hundred, and yet more were cast into the abyss of superchat offerings. The poets of Greece, Baudelaire, Verlaine, even that cunning elder Goethe—and let us not forget Akutagawa Ryūnosuke—gave no less than their very lives.</p>
+
+      <div class="break">· · ·</div>
+
+      <p class="en aside">And yet—what are these but idle letters? "Tsuittā." Flotsam upon the digital sea. The blossom of overfed comfort, incapable of nourishment. A machine that does not fly; a steed that does not run. Its coat glossy, its body well-fattened, perpetually feigning slumber. No reference book rests beside it; no dictionary casts even the faintest shadow. It boasts of SDGs and paperless virtue. It requires only a smartphone—together with a specially adorned, exquisitely lacquered Appetite for Recognition.</p>
+
+      <p class="en">Soon enough, the appointed broadcast. Broadcast, broadcast. Utterly without necessity. A remarkably accomplished stream, and yet—those who do not comprehend it shall remain unenlightened unto death. It cannot be helped.</p>
+
+      <p class="en rhetorical">Upon the lid of a washing machine I place my computer. The third dimension proves catastrophic. And thus, once more, I go live.</p>
+
+      <div class="colophon">
+        <div class="colophon-left">Written in the margins<br>of something or other</div>
+        <div class="colophon-right">洗濯機の蓋の上より</div>
+      </div>
+    </div>
+
+    <!-- ══════════ JAPANESE ══════════ -->
+    <div class="lang-layer" id="layer-ja">
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-center">断章より</span>
+        <div class="ornament-line"></div>
+      </div>
+
+      <div class="title-block">
+        <span class="title-ja">明日から本気出す</span>
+        <span class="seal">The<br>Steed</span>
+      </div>
+
+      <p class="ja preface">――いっそ本気になれたなら、と時おり思うだけの人間である。</p>
+
+      <p class="ja drop-cap">　何を書こうという、アテ無くして、いつのまにか、いわば、ささやかな稲荷の境内に立ち、「ツヰッタア」と呼ばれる坩堝を、かの冴えぬ板切れめいたものを透して、ただぼんやりと眺めていた。心は落ち着かず、決意も固まらぬ。いわば、軽い精神の空白のまま、私はふらりと歩き出したのである。</p>
+
+      <p class="ja">　いかにも儀式めいた手つきで、凡庸なスマアトホンを地に置き、朽ちかけた杉の老木へ近づく。根株には、干からびた蔦が一すじ、未練がましく絡みついている。私は杖でそれをぱりぱりと剥ぎ取った。深い意味はなく、それから、いささか芝居がかった声をあげて石狐に打ちかかり、その有様を配信に収め、電脳の空へと放った。これもまた、高尚な思索の結果であろうはずもない。</p>
+
+      <p class="ja">　配信者とは、だいたいこのようなものである、と人は言う。譬えでもなく、修養でもない。少しばかりの虚栄と、いくらかの臆病とを抱え、承認を求めて働く稼業にすぎぬ、と。私は反駁せず、ただ素直にうなずき、爪先立ちになって夕焼の雲を見つめた。</p>
+
+      <p class="ja">　あなたの投稿を、アルゴリズムによる推薦にて拝見しました、と前置きされて、あれを一言でもって覆えば何か、と幾度も問われる。そのたびに、私の気分は沈むのだ。一文で言えることなら、一文で言います、あれは、あれである、あれだけのもので、それ以上でも、それ以下でもない。どうか、以後、私の投稿は御覧にならぬがよい。ブラウザバックによる退却を、ひそかに推奨する。そちらの方が、私も安心だ。</p>
+
+      <div class="break">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <p class="ja">　色紙を貼った小箱。何の役に立つのか。何の役にも立たない。ただ、美しいだけである。</p>
+
+      <p class="ja">　花火一発、千円を超えて川に打ち上げる。何が残るというのか。</p>
+
+      <p class="ja">　衣服は、裸を隠せばそれで足りる。柄も、織も、色も、さしたる意味はない。二十五歳の男が、一夜、真紅の厨二のこころに染まり、しかも母親がヂャスコで買ってきた厨二くさい服をまとったとしても、それはやはり衣服である。世の秩序が揺らぐわけでもない。何をそれほど騒ぐことがある。</p>
+
+      <p class="ja">　ああ、崇高な光景。屋根を震わせる拍手喝采。しかし、それは一息のうちに消え去る。あの刹那の雷鳴を、私は欲し、欲し、なお欲して、一万、二万、いくらかをスパチャへと投じた。ギリシャの詩人たち、ボオドレエル、ヴェルレエヌ、老獪なゲエテ、そして芥川龍之介。彼らもまた、この一瞬を追い求めたのではなかったか。命さえ賭して。</p>
+
+      <div class="break">· · ·</div>
+
+      <p class="ja">　けれども、所詮、有閑の文字、「ツヰッタア」、電脳の海に浮かぶ漂流物にすぎぬ。飽食の果てに咲いた花で、この花は、煮ても食えぬ。飛ばぬ飛行機、走らぬ名馬。毛並みは艶やかで、腹は肥え、いつも狸寝入り。傍らに一冊の参考書もなく、辞書の影もないようだ。エス・ディ・ゼェズだのペェパァレスだのと徳を誇りつつ、必要とするのはスマアトホン一台、そして、特製華麗の承認欲求のみ。</p>
+
+      <p class="ja">　やがて約束の刻が来る。配信、また配信。まるで不要である。それでいて、出来だけは悪くない。理解せぬ者は、終生理解せぬであろう。致し方ない。</p>
+
+      <p class="ja rhetorical">　洗濯機の上にラップトップ・ピィシィを置く。三次は惨事と、今日も配信。</p>
+
+      <div class="colophon">
+        <div class="colophon-left">何かの余白に<br>書き留めたるもの</div>
+        <div class="colophon-right">The Unrunning Steed</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════ DEUTSCH ══════════ -->
+    <div class="lang-layer" id="layer-de">
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-center">ein Geständnis in Fragmenten</span>
+        <div class="ornament-line"></div>
+      </div>
+
+      <div class="title-block">
+        <span class="title-en">Das nichtlaufende Ross</span>
+        <span class="seal">走ら<br>ぬ馬</span>
+      </div>
+
+      <p class="en preface">—Sollte ich jemals ernsthaft werden, so wäre es wohl aus Versehen; für dergleichen bin ich nicht gebaut.</p>
+
+      <p class="en drop-cap">Was, in der Tat, soll ich schreiben? Ohne festen Vorsatz fand ich mich plötzlich im Bezirk eines bescheidenen Inari-Schreins wieder, wo ich gedankenverloren auf jenes unerquicklichste Gerät namens „Tsuittā" starrte. Mein Gemüt wollte sich nicht beruhigen; mein Entschluss gerann nicht zur Form. In einem Zustand leichten geistigen Stillstands begann ich umherzuirren.</p>
+
+      <p class="en">Mit beinahe zeremonieller Feierlichkeit legte ich mein Smartphone nieder und trat an eine ehrwürdige Zeder heran, deren Stamm bereits stille Verhandlungen mit dem Verfall aufgenommen hatte. An ihrem Wurzelstock hing eine einzige, vertrocknete Ranke. Mit meinem Stock schälte ich sie in spröden Stücken ab, ohne jede tiefere Absicht. Sodann, mit einem Ausruf von beinahe theatralischer Heftigkeit, fiel ich über einen steinernen Fuchs her, bannte die Szene photographisch und entsandte sie unverzüglich in den digitalen Äther. Auch dies entsprang keiner erhabenen Meditation.</p>
+
+      <p class="en">So, heißt es, sei das Wesen des Streamers: weder Allegorie noch sittliche Läuterung, sondern das Gewerbe der Eitlen und Zaghaften, die im Handel mit Anerkennung ihr Auskommen suchen. Gegen diese Anklage vermochte ich nichts einzuwenden. Fügsam neigte ich das Haupt und betrachtete auf Zehenspitzen die Abendwolken.</p>
+
+      <p class="en">Ihr Beitrag, so meldete mir das unbarmherzige System, sei gelesen worden. Wenn man ihn mit einem einzigen Satz umstürze – was bliebe dann? Diese Frage wurde mir wiederholt vorgelegt, und jedes Mal vertiefte sich meine Melancholie. Könnte ich es in einem Satz ausdrücken, so sagte ich: Es ist eben das, was es ist, und nichts darüber hinaus. Ich ersuche Sie daher, künftig von der Betrachtung meiner Beiträge abzusehen. Der Rückzug mittels der „Zurück"-Funktion Ihres Browsers sei dringend empfohlen.</p>
+
+      <div class="break">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <p class="en">Ein Gewand hat nichts weiter zu leisten, als die Blöße zu verhüllen. Muster, Gewebe, Farbe – all dies sind entbehrliche Eitelkeiten. Wenn ein fünfundzwanzigjähriger Mann sich für eine Nacht in scharlachroter Chūnibyō-Innigkeit wähnt und zudem ein Kleidungsstück trägt, das seine Mutter bei „Jusco" erwarb – so bleibt es doch ein Gewand. Welche kosmische Erschütterung sollte daraus erwachsen?</p>
+
+      <p class="en">Ach, erhabenes Schauspiel! Ein Applaus, der Dachziegel erzittern ließe – und doch im Atemzug vergeht. Nach jenem flüchtigen Donner sehnte ich mich, warf hundert, zweihundert und noch mehr in den Abgrund der „Superchat"-Opfergaben. Die Dichter Griechenlands, Baudelaire, Verlaine, selbst der verschlagene alte Goethe – und Akutagawa Ryūnosuke nicht zu vergessen – sie alle gaben nicht minder ihr Leben hin.</p>
+
+      <div class="break">· · ·</div>
+
+      <p class="en">Und doch – was bleibt? Müßige Lettern. „Tsuittā." Treibgut im digitalen Meer. Eine Blüte des Überflusses, die weder nährt noch trägt. Ein Flugzeug, das nicht fliegt; ein Ross, das nicht läuft. Das Fell glänzend, der Leib wohlgenährt, stets im vorgetäuschten Schlummer. Kein Nachschlagewerk ruht an seiner Seite; kein Wörterbuch wirft einen Schatten. Es rühmt sich der SDGs und papierloser Tugend – und bedarf doch nur eines Smartphones und eines kunstvoll lackierten Appetits auf Anerkennung.</p>
+
+      <p class="en">Bald naht die verabredete Stunde. Übertragung. Wieder Übertragung. Vollkommen entbehrlich – und doch von beachtlicher Qualität. Wer es nicht begreift, wird es bis zum Ende nicht begreifen. Es lässt sich nicht ändern.</p>
+
+      <p class="en rhetorical">Auf den Deckel der Waschmaschine stelle ich meinen Laptop. Die dritte Dimension gerät zur Katastrophe. Und so gehe ich erneut live.</p>
+
+      <div class="colophon">
+        <div class="colophon-left">Notiert am Rand<br>von irgend etwas</div>
+        <div class="colophon-right">洗濯機の蓋の上より</div>
+      </div>
+    </div>
+
+  </article>
+
+  <script>
+    function setLang(lang) {
+      document.getElementById('layer-en').classList.toggle('visible', lang === 'en');
+      document.getElementById('layer-ja').classList.toggle('visible', lang === 'ja');
+      document.getElementById('layer-de').classList.toggle('visible', lang === 'de');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+      document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+      document.documentElement.lang = lang;
+    }
+  </script>
+
+</body>
+</html>
